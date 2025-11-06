@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace PageTurner.Input;
 
-public partial class HotkeyListener : IDisposable {
+public partial class HotkeyListener  {
 	[LibraryImport("user32.dll")]
 	public static partial short GetAsyncKeyState(int vKey);
 
@@ -12,7 +12,7 @@ public partial class HotkeyListener : IDisposable {
 	readonly int _pollInterval;
 
 	public HotkeyListener(int pollInterval = 150) {
-		_pollInterval = Math.Max(1, pollInterval);
+		_pollInterval = Math.Max(5, pollInterval);
 		_bindings = [ ];
 	}
 
@@ -33,7 +33,10 @@ public partial class HotkeyListener : IDisposable {
 		if (_isRunning) return;
 
 		_isRunning = true;
-		_listenerThread = new Thread(Listen) { IsBackground = true, Name = "HotkeyListener" };
+		_listenerThread = new Thread(Listen) {
+			IsBackground = true,
+			Name = nameof(HotkeyListener)
+		};
 		_listenerThread.Start();
 	}
 
@@ -41,11 +44,6 @@ public partial class HotkeyListener : IDisposable {
 		_isRunning = false;
 		_listenerThread?.Join(1000);
 		_listenerThread = null;
-	}
-
-	public void Dispose() {
-		Stop();
-		_bindings.Clear();
 	}
 
 	void Listen() {
@@ -77,13 +75,12 @@ public partial class HotkeyListener : IDisposable {
 				if ((GetAsyncKeyState(key) & 0x8000) == 0) return false;
 			}
 			return true;
-		} else {
-			// All required down (skip "no extras" for simplicity)
-			foreach (int key in keys) {
-				if ((GetAsyncKeyState(key) & 0x8000) == 0) return false;
-			}
-			return true;
 		}
+		// All required down (skip "no extras" for simplicity)
+		foreach (int key in keys) {
+			if ((GetAsyncKeyState(key) & 0x8000) == 0) return false;
+		}
+		return true;
 	}
 }
 
