@@ -1,4 +1,4 @@
-namespace PageTurner.Input;
+namespace Common.Input;
 
 
 /// <summary>

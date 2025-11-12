@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PageTurner", "PageTurner\PageTurner.csproj", "{1CA55A80-5260-4BC8-B90D-893F7417419B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{B866FD6C-DCCB-4F9B-9E55-6BDD1B2E15A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PageTurnerW", "PageTurnerW\PageTurnerW.csproj", "{E74D8773-099E-4C80-88F6-FB5CF1A8A635}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{1CA55A80-5260-4BC8-B90D-893F7417419B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CA55A80-5260-4BC8-B90D-893F7417419B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CA55A80-5260-4BC8-B90D-893F7417419B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B866FD6C-DCCB-4F9B-9E55-6BDD1B2E15A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B866FD6C-DCCB-4F9B-9E55-6BDD1B2E15A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B866FD6C-DCCB-4F9B-9E55-6BDD1B2E15A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B866FD6C-DCCB-4F9B-9E55-6BDD1B2E15A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E74D8773-099E-4C80-88F6-FB5CF1A8A635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E74D8773-099E-4C80-88F6-FB5CF1A8A635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E74D8773-099E-4C80-88F6-FB5CF1A8A635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E74D8773-099E-4C80-88F6-FB5CF1A8A635}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

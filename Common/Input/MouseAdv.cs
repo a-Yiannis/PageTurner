@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 
-namespace PageTurner.Input;
+namespace Common.Input;
 
 /// <summary>
 /// Provides advanced human-like mouse movement functionality.

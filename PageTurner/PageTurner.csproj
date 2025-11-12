@@ -4,11 +4,9 @@
         <TargetFramework>net10.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <ApplicationIcon>click-2401.ico</ApplicationIcon>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <InvariantGlobalization>true</InvariantGlobalization>
-        <UsePreviewFeatures>true</UsePreviewFeatures>
         <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
         <BaseOutputPath>.\.bin\</BaseOutputPath>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -19,4 +17,7 @@
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
     </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
+    </ItemGroup>
 </Project>

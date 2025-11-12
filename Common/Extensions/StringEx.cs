@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
-using System.Text;
 
-namespace PageTurner.Extensions;
+namespace Common.Extensions;
 
 public static class StringEx {
 	public static string ToTitleCase(this string? s) {

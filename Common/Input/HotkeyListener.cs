@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace PageTurner.Input;
+namespace Common.Input;
 
 public partial class HotkeyListener  {
 	[LibraryImport("user32.dll")]

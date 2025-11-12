@@ -1,11 +1,9 @@
 using System.Diagnostics;
 using System.Text;
-using PageTurner.Ancillary;
+using Common.Input;
 using PageTurner.Audio;
-using PageTurner.Extensions;
-using PageTurner.Input;
 using static PageTurner.Ancillary.ConsoleHelpers;
-using static PageTurner.Input.VirtualKeys;
+using static Common.Input.VirtualKeys;
 
 const ConsoleKey escapeKey = ConsoleKey.Q;
 const ConsoleKey starterKey = ConsoleKey.W;
@@ -17,7 +15,6 @@ Console.Title = HeaderPrefix;
 Console.WindowWidth = 68;
 
 using var headerTimer = new Timer(_ => UpdateHeader(), null, 0, 1000);
-SetPaused();
 HotkeyListener listener = new ();
 
 listener.Register(StartLoop, Control, Alt, (int)ConsoleKey.W);
@@ -33,13 +30,10 @@ return;
 void StartLoop() {
 	listener.Stop();
 	listener.Unregister(StartLoop);
-	TogglePause();
-
-	listener.Register(TogglePause, Control, Alt, (int)ConsoleKey.W);
 	listener.Start();
 
 	var initialPosition = Mouse.GetCursorPosition();
-	Watcher.Watch(Click);
+	ConsoleWatcherApp.Run(Click);
 	
 	void Click() {
 		// add a little chaos to simulate reality even more

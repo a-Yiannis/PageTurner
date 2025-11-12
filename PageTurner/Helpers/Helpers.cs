@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using Common.Input;
+using Common;
 using PageTurner.Audio;
-using PageTurner.Input;
 
-namespace PageTurner.Ancillary;
+namespace PageTurner.Helpers;
 
 public static class Helpers {
 	static readonly Random rnd = new ();
@@ -16,24 +17,4 @@ public static class Helpers {
 	}
 
 	public static void UpdateHeader() => Console.Title = $@"{StateChar} {HeaderPrefix} ({ClicksCount}, {Start.Elapsed:hh\:mm\:ss})";
-	
-	public static void SetPaused() {
-		Watcher.IsPaused = true;
-		StateChar = "⏸︎";
-		UpdateHeader();
-	}
-		
-	public static void SetWatching() {
-		Watcher.IsPaused = false;
-		StateChar = "🎧";
-		UpdateHeader();
-	}
-
-	public static void TogglePause() {
-		if (Watcher.IsPaused) {
-			SetWatching();
-		} else {
-			SetPaused();
-		}
-	}
 }

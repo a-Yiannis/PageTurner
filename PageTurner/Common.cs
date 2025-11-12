@@ -1,7 +1,7 @@
 global using static PageTurner.Common;
-global using static PageTurner.Ancillary.Helpers;
+global using static PageTurner.Helpers.Helpers;
 using System.Diagnostics;
-using PageTurner.Extensions;
+using Common.Extensions;
 
 namespace PageTurner;
 
