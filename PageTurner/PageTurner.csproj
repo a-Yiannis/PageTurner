@@ -10,6 +10,7 @@
         <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
         <BaseOutputPath>.\.bin\</BaseOutputPath>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <ApplicationIcon>../click-2401.ico</ApplicationIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <DebugType>full</DebugType>

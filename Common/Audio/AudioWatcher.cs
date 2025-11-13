@@ -19,7 +19,7 @@ public class AudioWatcher {
 	/// <summary> Raised when the required silence duration is detected. </summary>
 	public event Action? SilenceDetected;
 
-	public AudioWatcher(float threshold = 0.05f, int checkIntervalMs = 500, int silenceDurationMs = 2000) {
+	public AudioWatcher(int checkIntervalMs = 200, float threshold = 0.05f, int silenceDurationMs = 2000) {
 		_threshold = threshold;
 		_checkIntervalMs = checkIntervalMs;
 		_silenceDurationMs = silenceDurationMs;
