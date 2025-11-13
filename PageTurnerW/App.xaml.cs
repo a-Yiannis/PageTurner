@@ -12,14 +12,15 @@ namespace PageTurnerW;
 /// Interaction logic for App.xaml
 /// </summary>
 public partial class App : Application {
-    readonly MainWindow _window;
+    readonly MainWindow? _window;
     public App() {
         DispatcherUnhandledException += App_DispatcherUnhandledException;
         _window = new MainWindow();
+        _window.Show();
         _window.Activate();
     }
 
-    private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
+    void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
         // Log the exception
         Debug.WriteLine($"Unhandled exception: {e.Exception.Message}");
         Debug.WriteLine($"Stack Trace: {e.Exception.StackTrace}");

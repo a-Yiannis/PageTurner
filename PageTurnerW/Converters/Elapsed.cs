@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace PageTurnerW.Converters;
 
-public class ElapsedConverter:IValueConverter {
+public class Elapsed:IValueConverter {
 	static readonly TimeSpan HoursThreshold = TimeSpan.FromHours(1);
 	static readonly TimeSpan MinutesThreshold = TimeSpan.FromMinutes(1);
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {

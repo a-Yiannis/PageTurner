@@ -4,12 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:PageTurnerW.Converters"
+        xmlns:vm="clr-namespace:PageTurnerW.ViewModels"
         mc:Ignorable="d"
         Closing="OnClosing"
         Title="Page Turner" Height="340" Width="400">
     <Window.Resources>
-        <converters:NumToVisibilityConverter x:Key="NumToVisibilityConverter" />
-        <converters:ElapsedConverter x:Key="ElapsedConverter"></converters:ElapsedConverter>
+        <vm:MainVM x:Key="ViewModel"/>
+        <converters:NumToVisibility x:Key="NumToVisibilityConverter" />
+        <converters:Elapsed x:Key="ElapsedConverter"></converters:Elapsed>
         <Style TargetType="Label">
             <!-- <Setter Property="Background" Value="Red" /> -->
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -33,7 +35,7 @@
             <Setter Property="Cursor" Value="Hand" />
         </Style>
     </Window.Resources>
-    <Grid Margin="4">
+    <Grid Margin="4" DataContext="{StaticResource ViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />

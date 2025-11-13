@@ -9,7 +9,7 @@ namespace PageTurnerW.Converters;
 /// Converts numeric values and strings to Visibility based on whether they represent zero or empty values.
 /// Optimized for common UI binding scenarios with fast-path handling for typical zero representations.
 /// </summary>
-public class NumToVisibilityConverter : IValueConverter {
+public class NumToVisibility : IValueConverter {
 	/// <summary>Whitespace and zero characters and zero used for trimming</summary>
 	const string WSandZero = "0 \t\r\n";
 

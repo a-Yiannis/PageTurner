@@ -8,7 +8,7 @@ using PageTurnerW.Helpers;
 
 namespace PageTurnerW.ViewModels;
 
-public sealed class MainWindowViewModel : ViewModelBase {
+public sealed class MainVM : ViewModelBase {
 	readonly DispatcherTimer _timer;
 	readonly AudioWatcher _audioWatcher;
 
@@ -24,12 +24,12 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
 	public double VolumeProgressBarValue {
 		get;
-		set => SetProperty(ref field, value);
+		set => SetField(ref field, value);
 	}
 
 	public string MousePositionText {
 		get;
-		set => SetProperty(ref field, value);
+		set => SetField(ref field, value);
 	} = "(0, 0)";
 
 	public string StartTimeText => $@"{_startTime:HH:mm}";
@@ -37,24 +37,26 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
 	public string Status {
 		get;
-		set => SetProperty(ref field, value);
+		set => SetField(ref field, value);
 	} = "Ready";
 
 	public string StatusMessage {
 		get;
-		set => SetProperty(ref field, value);
+		set => SetField(ref field, value);
 	} = "Standing by.";
 
-	public int ClicksCount { get; set => SetProperty(ref field, value); } = 0;
+	public bool IsBusy { get; set => SetField(ref field, value); }
+
+	public int ClicksCount { get; set => SetField(ref field, value); } = 0;
 
 	public event Action<string>? LogMessage;
 
-	public MainWindowViewModel() {
+	public MainVM() {
 		_timer = new DispatcherTimer {
 			Interval = TimeSpan.FromMilliseconds(1000),
 			IsEnabled = false
 		};
-		_timer.Tick += (_, _) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElapsedTime)));
+		_timer.Tick += (_, _) => OnPropertyChanged(nameof(ElapsedTime));
 
 		_audioWatcher = new AudioWatcher(250);
 		_audioWatcher.PeakMeasured += AudioWatcher_PeakMeasured;
@@ -95,6 +97,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
 			return;
 		}
 
+		// cancel other operations
 		await _cts.CancelAsync();
 		_isCapturingMouse = true;
 		LogMessage?.Invoke("Waiting for mouse click to capture position.");
@@ -109,8 +112,8 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
 		_startTime = DateTime.Now;
 		_stopwatch.Start();
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StartTimeText)));
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElapsedTime)));
+		OnPropertyChanged(nameof(StartTimeText));
+		OnPropertyChanged(nameof(ElapsedTime));
 
 		_timer.Start();
 	}
