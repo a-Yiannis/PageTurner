@@ -51,6 +51,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -84,14 +85,28 @@
             <TextBlock Grid.Row="2" Grid.Column="1"
                        Text="{Binding ClicksCount}" />
 
-            <Label Grid.Row="3" Grid.Column="0" Content="Volume" />
-            <ProgressBar Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="1" Height="20" Margin="8 0 0 0"
-                         Value="{Binding VolumeProgressBarValue}" />
+            <Label Grid.Row="3" Grid.Column="0">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="0" Padding="0">Silence</TextBlock>
+                    <TextBlock Margin="0" Padding="0">Threshold</TextBlock>
+                </StackPanel>
+            </Label>
+            <TextBox Grid.Row="3"  Grid.Column="1"
+                     Padding="4 2 76 0"
+                     Margin="8 0 0 0" Height="24"
+                     Text="{Binding SilenceThresholdS}" />
             <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right"
                        Padding="4 0"
-                       Text="{Binding VolumeProgressBarValue, StringFormat=p1}" />
+                       Text="seconds" />
 
-            <Grid Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0">
+            <Label Grid.Row="4" Grid.Column="0" Content="Volume" />
+            <ProgressBar Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="1" Height="20" Margin="8 0 0 0"
+                         Value="{Binding Volume}" />
+            <TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right"
+                       Padding="4 0"
+                       Text="{Binding Volume, StringFormat=p1}" />
+
+            <Grid Grid.Row="7" Grid.ColumnSpan="2" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -105,7 +120,9 @@
         <StatusBar Grid.Row="1" Margin="0">
             <Label Content="{Binding Status}"
                    HorizontalAlignment="Left"
+                   FontWeight="DemiBold"
                    Margin="0" />
+            <TextBlock Text="{Binding StatusMessage}"/>
         </StatusBar>
     </Grid>
 </Window>

@@ -1,10 +1,10 @@
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using Common.Audio;
 using Common.Input;
 using PageTurnerW.Helpers;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable UnusedMember.Global
 
 namespace PageTurnerW.ViewModels;
 
@@ -17,37 +17,33 @@ public sealed class MainVM : ViewModelBase {
 	readonly Stopwatch _stopwatch = new();
 	bool _isCapturingMouse;
 	Mouse.POINT _capturedMousePosition;
-	
+
 	readonly CancellationTokenSource _cts = new();
 
 	public Mouse.POINT CapturedMousePosition => _capturedMousePosition;
 
-	public double VolumeProgressBarValue {
-		get;
-		set => SetField(ref field, value);
-	}
+	public double Volume { get; set => SetField(ref field, value); }
 
-	public string MousePositionText {
-		get;
-		set => SetField(ref field, value);
-	} = "(0, 0)";
+	public string MousePositionText { get; set => SetField(ref field, value); } = "(0, 0)";
 
 	public string StartTimeText => $@"{_startTime:HH:mm}";
 	public TimeSpan ElapsedTime => _stopwatch.Elapsed;
 
-	public string Status {
-		get;
-		set => SetField(ref field, value);
-	} = "Ready";
+	public string Status { get; set => SetField(ref field, value); } = "Ready";
 
-	public string StatusMessage {
-		get;
-		set => SetField(ref field, value);
-	} = "Standing by.";
+	public string StatusMessage { get; set => SetField(ref field, value); } = "Standing by.";
 
 	public bool IsBusy { get; set => SetField(ref field, value); }
 
 	public int ClicksCount { get; set => SetField(ref field, value); } = 0;
+
+	public double SilenceThresholdS {
+		get;
+		set {
+			_audioWatcher.SilenceThresholdMs = (int)Math.Round(value / 1000);
+			SetField(ref field, value);
+		}
+	}
 
 	public event Action<string>? LogMessage;
 
@@ -58,21 +54,24 @@ public sealed class MainVM : ViewModelBase {
 		};
 		_timer.Tick += (_, _) => OnPropertyChanged(nameof(ElapsedTime));
 
-		_audioWatcher = new AudioWatcher(250);
-		_audioWatcher.PeakMeasured += AudioWatcher_PeakMeasured;
-		_audioWatcher.SilenceDetected += AudioWatcher_SilenceDetected;
+		_audioWatcher = new AudioWatcher();
+		_audioWatcher.CheckIntervalMs = 250;
+		_audioWatcher.SilenceThresholdMs = 10_000;
+		SilenceThresholdS = _audioWatcher.SilenceThresholdMs / 1000.0;
+		_audioWatcher.OnPeak += audioWatcherOnPeak;
+		_audioWatcher.OnSilence += audioWatcherOnSilence;
 
 		_audioWatcher.Start();
 		LogMessage += message => StatusMessage = message;
 	}
 
-	void AudioWatcher_PeakMeasured(float newVolume) {
+	void audioWatcherOnPeak(float newVolume) {
 		// WASAPI reports volume from 0.0 to 1.0, convert to 0-100 for ProgressBar
 		// Dispatcher.Invoke is not needed here because VolumeProgressBarValue is a bound property
-		VolumeProgressBarValue = newVolume;
+		Volume = newVolume;
 	}
 
-	void AudioWatcher_SilenceDetected() {
+	void audioWatcherOnSilence() {
 		if (_capturedMousePosition is { X: 0, Y: 0 }) return;
 		// Mouse actions need to be on the UI thread
 		System.Windows.Application.Current.Dispatcher.Invoke(() => {
@@ -122,17 +121,19 @@ public sealed class MainVM : ViewModelBase {
 	public async Task ShowCoordinates() {
 		try {
 			if (__isBlinking) return;
-		
+
 			__isBlinking = true;
-			for (int j = 0; j < 10; j++) {
+			for (int i = 0; i < 10; i++) {
+				Debug.WriteLine("Show!");
 				ScreenPointer.Show(_capturedMousePosition);
 				await Task.Delay(450, _cts.Token);
+				Debug.WriteLine("Hide!");
 				ScreenPointer.Hide();
 				await Task.Delay(300, _cts.Token);
 				if (_cts.IsCancellationRequested) return;
 			}
 		} catch {
-			// ignored
+			Debug.WriteLine("Blinking failed.");
 		} finally {
 			__isBlinking = false;
 		}
@@ -143,5 +144,4 @@ public sealed class MainVM : ViewModelBase {
 		_audioWatcher.Stop();
 		_timer.Stop();
 	}
-
 }
