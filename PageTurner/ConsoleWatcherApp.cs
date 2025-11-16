@@ -1,6 +1,7 @@
 using PageTurner.Ancillary;
 using System;
 using Common.Audio;
+using System.Threading;
 
 namespace PageTurner.Audio;
 
@@ -14,19 +15,20 @@ public static class ConsoleWatcherApp {
 		using var progressBar = new ProgressBar(50, '-');
 		var watcher = Watcher = new AudioWatcher();
 
-		watcher.PeakMeasured += progressBar.Update;
-		watcher.SilenceDetected += onSilence;
+		watcher.OnPeak += progressBar.Update;
+		watcher.OnSilence += onSilence;
 
 		watcher.Start();
+
+		var exitEvent = new ManualResetEvent(false);
 
 		Console.CancelKeyPress += (_, e) => {
 			e.Cancel = true;
 			watcher.Stop();
 			Console.WriteLine("\n🛑 Stopped listening.");
+			exitEvent.Set();
 		};
 
-		// Keep main thread alive
-		while (watcher.IsRunning)
-			Thread.Sleep(500);
+		exitEvent.WaitOne();
 	}
 }

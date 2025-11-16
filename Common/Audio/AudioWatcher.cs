@@ -2,9 +2,7 @@ using System.Diagnostics;
 
 namespace Common.Audio;
 
-/// <summary>
-/// Continuously monitors system audio and triggers a callback after a period of silence.
-/// </summary>
+/// <summary> Continuously monitors system audio and triggers a callback after a period of silence. </summary>
 public class AudioWatcher : IDisposable {
 	Thread? _thread;
 	volatile bool _isRunning;
@@ -25,7 +23,7 @@ public class AudioWatcher : IDisposable {
 		}
 	}
 
-	float _volumeThreshold;
+	float _volumeThreshold = 0.05f;
 
 	/// <summary>
 	/// How loud can it be before it is considered silence.
@@ -126,10 +124,7 @@ public class AudioWatcher : IDisposable {
 					}
 				}
 
-				// Use smaller sleeps to check _isRunning more frequently
-				for (int i = 0; i < checkInterval && _isRunning; i += 50) {
-					Thread.Sleep(Math.Min(50, checkInterval - i));
-				}
+				Thread.Sleep(checkInterval);
 			}
 		} catch (Exception ex) {
 			// Consider adding an ErrorOccurred event for notification

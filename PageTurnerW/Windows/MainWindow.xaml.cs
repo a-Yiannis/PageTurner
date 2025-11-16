@@ -6,34 +6,28 @@ using PageTurnerW.ViewModels;
 
 namespace PageTurnerW.Windows;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class MainWindow {
+public partial class MainWindow : Window {
 	public MainWindow() => InitializeComponent();
 
-	async void CaptureMousePosition_Click(object sender, RoutedEventArgs e) {
-		try {
-			await ViewModel.CaptureMousePosition();
-		} catch (Exception ex) {
-			LogException(ex);
-		}
+	void OnClosing(object sender, CancelEventArgs e) {
+		if (Resources["ViewModel"] is not MainVM vm) return;
+		vm.Dispose();
 	}
 
-	public MainVM ViewModel => (MainVM)Resources["ViewModel"]!;
-
-	void OnClosing(object? sender, CancelEventArgs e) => ScreenPointer.Close();
-
-	protected override void OnClosed(EventArgs e) {
-		ViewModel.OnWindowClosed();
-		base.OnClosed(e);
+	void Coords_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+		if (Resources["ViewModel"] is not MainVM vm) return;
+		vm.Stop();
+	}
+	void Coords_OnMouseEnter(object sender, MouseEventArgs e) {
+		if (Resources["ViewModel"] is not MainVM vm) return;
+		vm.CapturedMousePosition.ConditionalExecute(ScreenPointer.Show);
+	}
+	void Coords_OnMouseLeave(object sender, MouseEventArgs e) {
+		ScreenPointer.Hide();
 	}
 
-	async void OnMouseRightButtonDown(object? sender, MouseButtonEventArgs e) {
-		try {
-			await ViewModel.ShowCoordinates();
-		} catch {
-			// ignored
-		}
-	}
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

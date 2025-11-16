@@ -30,17 +30,18 @@ public static class Mouse {
 			Y = y;
 		}
 
-		public POINT((double x, double y) xy) : this((int)xy.x, (int)xy.y) { }
+		public bool IsEmpty => X == 0 && Y == 0;
 
 		public override string ToString() => $"({X}, {Y})";
 		public void Deconstruct(out int x, out int y) {
 			x = X;
 			y = Y;
 		}
-		public void IfNotNull(Action<POINT> action) {
-			if (X == 0 || Y == 0) return;
-			Debug.WriteLine(this);
-			action.Invoke(this);
+		public void ConditionalExecute(Action<POINT> action, Predicate<POINT>? predicate = null) {
+			if (predicate?.Invoke(this) ?? (X != 0 || Y != 0)) {
+				Debug.WriteLine(this);
+				action.Invoke(this);
+			}
 		}
 	}
 
@@ -119,7 +120,7 @@ public static class Mouse {
 
 	static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
 		if (nCode < 0 || wParam != WM_LBUTTONDOWN) return CallNextHookEx(_hookID, nCode, wParam, lParam);
-		MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+		MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
 		_tcs?.TrySetResult(new POINT(hookStruct.pt.x, hookStruct.pt.y));
 		UnhookWindowsHookEx(_hookID);
 		return CallNextHookEx(_hookID, nCode, wParam, lParam);

@@ -5,21 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:PageTurnerW.Converters"
         xmlns:vm="clr-namespace:PageTurnerW.ViewModels"
+        xmlns:validators="clr-namespace:PageTurnerW.Validators"
         mc:Ignorable="d"
         Closing="OnClosing"
         Title="Page Turner" Height="340" Width="400">
     <Window.Resources>
         <vm:MainVM x:Key="ViewModel"/>
         <converters:NumToVisibility x:Key="NumToVisibilityConverter" />
-        <converters:Elapsed x:Key="ElapsedConverter"></converters:Elapsed>
+        <converters:ElapsedToNum x:Key="ElapsedConverter"></converters:ElapsedToNum>
+        <converters:StateToPauseResumeTextConverter x:Key="StateToPauseResumeTextConverter" />
         <Style TargetType="Label">
-            <!-- <Setter Property="Background" Value="Red" /> -->
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Margin" Value="0" />
         </Style>
         <Style TargetType="TextBlock">
-            <!-- <Setter Property="Background" Value="DarkCyan" /> -->
             <Setter Property="VerticalAlignment" Value="Center" />
 
             <Setter Property="Padding" Value="12 0 0 0" />
@@ -33,6 +33,17 @@
             <Setter Property="Margin" Value="4" />
             <Setter Property="Padding" Value="8" />
             <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="CornflowerBlue" />
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="BorderBrush" Value="Red" />
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self},
+                        Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid Margin="4" DataContext="{StaticResource ViewModel}">
@@ -61,7 +72,7 @@
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0">
                 <TextBlock Text="{Binding StartTimeText}" />
                 <StackPanel Orientation="Horizontal" Margin="4 0"
-                            Visibility="{Binding ElapsedTime, Converter={StaticResource NumToVisibilityConverter}}">
+                            Visibility="{Binding TotalElapsedTime, Converter={StaticResource NumToVisibilityConverter}}">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">
                             <Setter Property="Background" Value="Transparent" />
@@ -70,7 +81,9 @@
                         </Style>
                     </StackPanel.Resources>
                     <TextBlock Text="(" />
-                    <TextBlock Text="{Binding ElapsedTime, Converter={StaticResource ElapsedConverter}}" />
+                    <TextBlock Text="{Binding TotalElapsedTime, Converter={StaticResource ElapsedConverter}}" />
+                    <TextBlock Text="," />
+                    <TextBlock Text="{Binding LastElapsedTime, Converter={StaticResource ElapsedConverter}}" />
                     <TextBlock Text=")" />
                 </StackPanel>
             </StackPanel>
@@ -78,7 +91,9 @@
             <Label Grid.Row="1" Grid.Column="0" Content="Position" />
             <TextBlock Grid.Row="1" Grid.Column="1"
                    Text="{Binding MousePositionText}"
-                   MouseRightButtonDown="OnMouseRightButtonDown"
+                   MouseEnter="Coords_OnMouseEnter"
+                   MouseLeave="Coords_OnMouseLeave"
+                   MouseRightButtonDown="Coords_OnMouseRightButtonDown"
                    Cursor="Hand" />
 
             <Label Grid.Row="2" Grid.Column="0" Content="#Clicks" />
@@ -93,8 +108,15 @@
             </Label>
             <TextBox Grid.Row="3"  Grid.Column="1"
                      Padding="4 2 76 0"
-                     Margin="8 0 0 0" Height="24"
-                     Text="{Binding SilenceThresholdS}" />
+                     Margin="8 0 0 0" Height="24">
+                <TextBox.Text>
+                    <Binding Path="SilenceThresholdS" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <validators:BoundNumVR Min="0" Max="1000" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
             <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right"
                        Padding="4 0"
                        Text="seconds" />
@@ -109,12 +131,15 @@
             <Grid Grid.Row="7" Grid.ColumnSpan="2" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="1"
+                        Content="{Binding State, Converter={StaticResource StateToPauseResumeTextConverter}}"
+                        Command="{Binding TogglePauseCommand}"/>
+                <Button Grid.Column="2"
                         Content="CAPTURE"
-                        Click="CaptureMousePosition_Click">
-                </Button>
+                        Command="{Binding CaptureMousePositionCommand}"/>
             </Grid>
         </Grid>
         <StatusBar Grid.Row="1" Margin="0">
